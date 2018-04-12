@@ -10,11 +10,11 @@
 #--restart <docker_name>
 #--restart-all
 
+from __future__ import print_function
 import sys, getopt
 import json
 import subprocess
 import os
-from __future__ import print_function
 
 CONFIG_FILE = 'DockersConfig.json'
 
