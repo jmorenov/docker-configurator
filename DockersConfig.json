@@ -1,0 +1,36 @@
+{
+  "dockers": {
+    "container_name": {
+      "image": "image_name",
+      "needBuild": false,
+      "imagePath": "",
+      "ports": [
+        {
+          "dockerPort": "3306",
+          "serverPort": "3307"
+        }
+      ],
+      "net": "",
+      "ip": "1.2.3.4",
+      "privileged": true,
+      "mountVolumes": [
+        {
+          "localVolume": "/localvolume",
+          "dockerVolume": "/dockervolume"
+        },
+        {
+          "localVolume": "/localvolume",
+          "dockerVolume": "/dockervolume"
+        }
+      ],
+      "link": "link_to_container",
+      "variables": {
+        "name": "value"
+      }
+    } 
+  },
+  "defaultNetwork": {
+    "name": "default_net",
+    "subnet": "1.2.3.4/16"
+  }
+}
