@@ -94,9 +94,9 @@ def createNetwork(networkConfig):
     out, err, returnCode = runCommand('docker network ls --filter "name=' + name + '" | grep -w ' + name + '')
 
     if len(out) == 0:
-        '''print 'Creating network ' + name
-        out, err, returnCode = runCommand(['docker', 'network', 'create', subnet, name])'''
-        print '[ERROR] Network '  + name + ' not exists'
+        '''print ('Creating network ' + name
+        out, err, returnCode = runCommand(['docker', 'network', 'create', subnet, name]))'''
+        print ('[ERROR] Network '  + name + ' not exists')
         os._exit(2)
 
 def buildDocker(imageName, imagePath):
