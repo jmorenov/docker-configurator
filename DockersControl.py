@@ -14,6 +14,7 @@ import sys, getopt
 import json
 import subprocess
 import os
+from __future__ import print_function
 
 CONFIG_FILE = 'DockersConfig.json'
 
@@ -23,16 +24,16 @@ def readConfigFile(file):
         data = json.load(jdata)
         jdata.close()
     except IOError:
-        print 'ERROR: Configuration File not found'
+        print ('ERROR: Configuration File not found')
         sys.exit(2)
     except OSError as err:
-        print 'ERROR: OS error: {0}'.format(err)
+        print ('ERROR: OS error: {0}'.format(err))
         sys.exit(2)
     except ValueError:
-        print 'ERROR: Could not read the config file (', file, ')'
+        print ('ERROR: Could not read the config file (', file, ')')
         sys.exit(2)
     except:
-        print 'ERROR: Unexpected error:', sys.exc_info()[0]
+        print ('ERROR: Unexpected error:', sys.exc_info()[0])
         sys.exit(2)
     else:
         return data
@@ -41,14 +42,14 @@ def getDocker(configFile, dockerName):
     try:
         dockers = readConfigFile(configFile)['dockers']
     except KeyError:
-        print 'ERROR: Bad configuration file format'
+        print ('ERROR: Bad configuration file format')
         sys.exit(2)
     else:
         try:
             docker = dockers[dockerName]
             docker['name'] = dockerName
         except KeyError:
-            print '[ERROR] Docker name', dockerName, 'not found'
+            print ('[ERROR] Docker name', dockerName, 'not found')
             sys.exit(2)
         else:
             return docker
@@ -57,7 +58,7 @@ def getNetwork(configFile):
     try:
         networkConfig = readConfigFile(configFile)['defaultNetwork']
     except KeyError:
-        print '[ERROR] Bad configuration file format'
+        print ('[ERROR] Bad configuration file format')
         sys.exit(2)
     else:
         return networkConfig
@@ -67,7 +68,7 @@ def runCommand(command, stdin=None, stdoutConsole=False):
         subprocess.Popen('docker', stdout=subprocess.PIPE)
     except OSError as e:
         if e.errno == os.errno.ENOENT:
-            print 'ERROR: Docker should be installed'
+            print ('ERROR: Docker should be installed')
             os._exit(2)
     else:
         proc = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=stdin)
@@ -113,7 +114,7 @@ def getValueOfConfigKey(dockerConfig, key, isMandatory = False):
         else:
             return str(dockerConfig[key])
     elif isMandatory:
-        print 'ERROR: Key config ' + key + ' not found and is mandatory'
+        print ('ERROR: Key config ' + key + ' not found and is mandatory')
         os._exit(1)
     else:
         return False
@@ -193,19 +194,19 @@ def runDocker(dockerConfig, defaultNetworkName):
 
     if returnCode != 0 or len(err) != 0:
         print out
-        print '[ERROR] ' + err
+        print ('[ERROR] ' + err)
         os._exit(1)
     elif isDockerRunning(name) == False:
         stopADockerByName(name)
-        print '[ERROR] Something failed. Docker is not running'
+        print ('[ERROR] Something failed. Docker is not running')
         os._exit(1)
     else:
-        print '[OK] Docker ' + name + ' running'
+        print ('[OK] Docker ' + name + ' running')
 
 # "Interface" functions
 def startADocker(configFile, dockerName):
     if isDockerRunning(dockerName):
-        print '[INFO] Docker ' + dockerName + ' is already running'
+        print ('[INFO] Docker ' + dockerName + ' is already running')
     else:
         dockerConfig = getDocker(configFile, dockerName)
         networkConfig = getNetwork(configFile)
@@ -213,7 +214,7 @@ def startADocker(configFile, dockerName):
             createNetwork(networkConfig)
             runDocker(dockerConfig, networkConfig['name'])
         except:
-            print '[ERROR] Unexpected error:', sys.exc_info()[0]
+            print ('[ERROR] Unexpected error:', sys.exc_info()[0])
             sys.exit(2)
 
 def startAll(configFileName):
@@ -253,11 +254,11 @@ def stopADockerByName(dockerName):
         out, err, returnCode = runCommand('docker rm ' + dockerName)
 
         if  len(err) != 0:
-            print '[ERROR] Docker: ' + dockerName + ''
+            print ('[ERROR] Docker: ' + dockerName + '')
         else:
-            print '[OK] Docker: ' + dockerName + ' stopped'
+            print ('[OK] Docker: ' + dockerName + ' stopped')
     else:
-        print '[ERROR] Docker: ' + dockerName + ' is already stopped'
+        print ('[ERROR] Docker: ' + dockerName + ' is already stopped')
 
 def stopADockerByImage(dockerImage):
     out, err, returnCode = runCommand('docker ps -a --filter "ancestor=' + dockerImage + '" | grep -w ' + dockerImage + ' | awk \'{print $1}\'')
@@ -272,10 +273,10 @@ def stopADockerByImage(dockerImage):
                 out, err, returnCode = runCommand('docker rm ' + id)
 
                 if  len(err) != 0:
-                    print '[ERROR] Docker image: ' + dockerImage + ' with ID' + id
+                    print ('[ERROR] Docker image: ' + dockerImage + ' with ID' + id)
                     sys.exit(2)
 
-        print '[OK] Docker image: ' + dockerImage + ' stopped'
+        print ('[OK] Docker image: ' + dockerImage + ' stopped')
 
 def getDockers(configFile):
     data = readConfigFile(configFile)
@@ -289,7 +290,7 @@ def main(argv):
                                              'stop-by-name=', 'stop-by-image=',
                                              'restart=', 'stop-all', 'restart-all', 'default'])
     except getopt.GetoptError:
-        print 'Error: try DockersControl.py --help/-h'
+        print ('Error: try DockersControl.py --help/-h')
         sys.exit(2)
 
     arguments = []
@@ -299,20 +300,20 @@ def main(argv):
         values.append(arg)
 
     if arguments == []:
-        print 'Error: try DockersControl.py --help/-h'
+        print ('Error: try DockersControl.py --help/-h')
         sys.exit(2)
 
     if '-h' in arguments or '--help' in arguments:
-        print 'Commands:'
-        print '--start-all'
-        print '--stop-all'
-        print '--restart-all'
-        print '--start <docker name>'
-        print '--stop <docker name>'
-        print '--stop-by-name <docker name>'
-        print '--stop-by-image <docker image>'
-        print '--restart <docker name>'
-        print '--get-dockers'
+        print ('Commands:')
+        print ('--start-all')
+        print ('--stop-all')
+        print ('--restart-all')
+        print ('--start <docker name>')
+        print ('--stop <docker name>')
+        print ('--stop-by-name <docker name>')
+        print ('--stop-by-image <docker image>')
+        print ('--restart <docker name>')
+        print ('--get-dockers')
         sys.exit()
 
     if '--config-file' in arguments:
@@ -337,7 +338,7 @@ def main(argv):
     elif '--stop-by-image' in arguments:
         stopADockerByImage(values[arguments.index('--stop-by-image')])
     else:
-        print 'Error: try DockersControl.py --help/-h'
+        print ('Error: try DockersControl.py --help/-h')
         sys.exit(2)
 
 if __name__ == '__main__':
