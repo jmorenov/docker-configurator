@@ -103,7 +103,7 @@ def buildDocker(imageName, imagePath):
     out, err, returnCode = runCommand('docker build ' + imagePath + ' -t ' + imageName, stdoutConsole=True)
 
     if returnCode == 1:
-        print err
+        print (err)
         os._exit(1)
 
 def getValueOfConfigKey(dockerConfig, key, isMandatory = False):
@@ -193,7 +193,7 @@ def runDocker(dockerConfig, defaultNetworkName):
     out, err, returnCode = runCommand(command)
 
     if returnCode != 0 or len(err) != 0:
-        print out
+        print (out)
         print ('[ERROR] ' + err)
         os._exit(1)
     elif isDockerRunning(name) == False:
@@ -280,7 +280,7 @@ def stopADockerByImage(dockerImage):
 
 def getDockers(configFile):
     data = readConfigFile(configFile)
-    for dockerName in data['dockers'].keys(): print dockerName
+    for dockerName in data['dockers'].keys(): print (dockerName)
 
 def main(argv):
     configFile = CONFIG_FILE
